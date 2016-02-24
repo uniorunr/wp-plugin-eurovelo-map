@@ -1,7 +1,6 @@
 <?php
 $defaults = $this::$defaults;
 unset($defaults['serialized']);
-$geocoders = $this::$geocoders;
 
 if (isset($_POST['submit'])) {
 	/* copy and overwrite $post for checkboxes */
@@ -36,7 +35,7 @@ if (isset($_POST['submit'])) {
 ?>
 
 <div class="wrap">
-	<h2>Leaflet Map Plugin</h2>
+	<h2>Eurovelo Map Plugin</h2>
 	<div class="wrap">
 	<form method="post">
 	<?php
@@ -57,23 +56,7 @@ if (isset($_POST['submit'])) {
 			<span class="label"><?php option_label($k); ?></span>
 			<span class="input-group">
 			<?php
-			if ($k === 'leaflet_geocoder') {
-			?>
-                <select id="<?php echo $k; ?>"
-                	name="<?php echo $k; ?>"
-                	class="full-width">
-                <?php
-                foreach ($geocoders as $o => $n) {
-                ?>
-                    <option value="<?php echo $o; ?>"<?php if (get_option('leaflet_geocoder') == $o) echo ' selected' ?>>
-                    	<?php echo $n; ?>
-                   	</option>
-                <?php
-                }
-                ?>
-                </select>
-			<?php
-			} elseif ($type === 'text') {
+			if ($type === 'text') {
 			?>
 				<input class="full-width" name="<?php echo $k; ?>" type="text" id="<?php echo $k; ?>" value="<?php echo htmlspecialchars( get_option($k, $v) ); ?>" />
 			<?php
