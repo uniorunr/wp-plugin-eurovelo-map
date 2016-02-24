@@ -1,0 +1,6 @@
+[submodule "lib/Leaflet.fullscreen"]
+	path = lib/Leaflet.fullscreen
+	url = https://github.com/Leaflet/Leaflet.fullscreen.git
+[submodule "lib/Leaflet.Panoramio"]
+	path = lib/Leaflet.Panoramio
+	url = https://github.com/shurshur/Leaflet.Panoramio.git
