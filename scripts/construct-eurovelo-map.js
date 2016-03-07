@@ -174,10 +174,18 @@ var WPEuroveloMapPlugin = {
 				var color = '#aa0000';
 				var width = 3;
 
-				if (feature.properties.stroke !== null)
-					color = '#' + feature.properties.stroke;
+				if (feature.properties.stroke !== undefined) {
+					var c = feature.properties.stroke;
+					var r, g, b;
 
-				if (feature.properties['stroke-width'] !== null)
+					r = c.substr(4, 2);
+					g = c.substr(2, 2);
+					b = c.substr(0, 2);
+
+					color = '#' + r + g + b;
+				}
+
+				if (feature.properties['stroke-width'] !== undefined)
 					width = feature.properties['stroke-width'];
 
 				return {color: color, weight: width, opacity: 0.8};
