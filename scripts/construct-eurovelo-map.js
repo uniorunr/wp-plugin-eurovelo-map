@@ -59,7 +59,10 @@ var WPEuroveloMapPlugin = {
 				};
 
 				for (var file in kmlFiles) {
-					var route = WPEuroveloMapPlugin.routesLayer(opts.routes_base_url + '/' + file).addTo(map);
+					var route = WPEuroveloMapPlugin.routesLayer(opts.routes_base_url + '/' + file);
+					if (file !== "vh.kml")
+						route.addTo(map);
+
 					routes_overlays[kmlFiles[file]] = route;
 				}
 			}
