@@ -110,13 +110,30 @@ var WPEuroveloMapPlugin = {
 			L.extend(overlays, routes_overlays);
 
 			var layersCtl = L.control.layers(baseLayers, overlays).addTo(map);
+			var globusEnabled = true;
+			var panoramioEnabled = true;
+
+			map.on('overlayadd', function(obj) {
+				if (obj.layer === globusGroup)
+					globusEnabled = true;
+				if (obj.layer === panoramio)
+					panoramioEnabled = true;
+			});
+
+			map.on('overlayremove', function(obj) {
+				if (obj.layer === globusGroup)
+					globusEnabled = false;
+				if (obj.layer === panoramio)
+					panoramioEnabled = false;
+			});
+
 
 			map.on('zoomend', function() {
 				if (map.getZoom() >= 11) {
-					if (!map.hasLayer(panoramio))
+					if (!map.hasLayer(panoramio) && panoramioEnabled)
 						panoramio.addTo(map);
 
-					if (!map.hasLayer(globusGroup))
+					if (!map.hasLayer(globusGroup) && globusEnabled)
 						globusGroup.addTo(map);
 				} else {
 					if (map.hasLayer(panoramio))
