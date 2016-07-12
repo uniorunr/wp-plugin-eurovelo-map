@@ -198,6 +198,12 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
             $height = empty($height) ? $default_height : $height;
             $width = empty($width) ? $default_width : $width;
 	    $routes_url = empty($routes_url) ? $default_routes_url : $routes_url;
+	    $disabled_routes = empty($disabled_routes) ? 'vh.kml' : $disabled_routes;
+
+	    $disabled_routes = explode(',', $disabled_routes);
+	    $disabled_routes = implode("','", $disabled_routes);
+	    $disabled_routes = "'{$disabled_routes}'";
+
 
             /* allow percent, but add px for ints */
             $height .= is_numeric($height) ? 'px' : '';
@@ -213,7 +219,8 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
                 zoom: {$zoom},
                 scrollwheel: {$scrollwheel},
 		zoomcontrol: {$zoomcontrol},
-		routes_base_url: '{$routes_url}'
+		routes_base_url: '{$routes_url}',
+		disabled_routes: [{$disabled_routes}]
             });
             </script>";
 

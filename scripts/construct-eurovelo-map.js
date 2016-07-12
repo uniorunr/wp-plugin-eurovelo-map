@@ -60,7 +60,7 @@ var WPEuroveloMapPlugin = {
 
 				for (var file in kmlFiles) {
 					var route = WPEuroveloMapPlugin.routesLayer(opts.routes_base_url + '/' + file);
-					if (file !== "vh.kml")
+					if (opts.disabled_routes.indexOf(file) == -1)
 						route.addTo(map);
 
 					routes_overlays[kmlFiles[file]] = route;
