@@ -215,6 +215,12 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
             /* should be iterated for multiple maps */
             $content = '<div id="eurovelo-wordpress-map-'.$eurovelo_map_count.'" class="eurovelo-wordpress-map" style="height:'.$height.'; width:'.$width.';"></div>';
 
+	    $plugin_url = plugins_url('', __FILE__);
+
+	    $poi_icons = file_get_contents(wp_upload_dir()['basedir'] . '/poi-icons-map.js');
+	    if (!$poi_icons)
+		    $poi_icons = 'null';
+
             $content .= "<script>
 	    WPEuroveloMapPlugin.addMap('eurovelo-wordpress-map-{$eurovelo_map_count}', {
                 lat: {$lat},
@@ -223,7 +229,9 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
                 scrollwheel: {$scrollwheel},
 		zoomcontrol: {$zoomcontrol},
 		routes_base_url: '{$routes_url}',
-		disabled_routes: [{$disabled_routes}]
+		disabled_routes: [{$disabled_routes}],
+		plugin_url: '{$plugin_url}',
+		poiIcons: {$poi_icons}
             });
             </script>";
 

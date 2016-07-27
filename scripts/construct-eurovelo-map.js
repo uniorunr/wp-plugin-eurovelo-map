@@ -59,7 +59,7 @@ var WPEuroveloMapPlugin = {
 				};
 
 				for (var file in kmlFiles) {
-					var route = WPEuroveloMapPlugin.routesLayer(opts.routes_base_url + '/' + file);
+					var route = WPEuroveloMapPlugin.routesLayer(opts.routes_base_url + '/' + file, opts.plugin_url, opts.routes_base_url, opts.poiIcons);
 					if (opts.disabled_routes.indexOf(file) == -1)
 						route.addTo(map);
 
@@ -179,17 +179,73 @@ var WPEuroveloMapPlugin = {
 		}
 	},
 
-	routesLayer: function(file) {
+	routesLayer: function(file, pluginUrl, baseRoutesUrl, customPois) {
+
+		if (customPois)
+			var poiIcons = customPois;
+		else
+			var poiIcons = {
+				'rail.png': 'railway-station',
+				'bus.png': 'railway-station',
+				'hostel.png': 'table-shelter',
+				'hotel.png': 'hotel',
+				'beautiful.png': 'viewpoint',
+				'world.png': 'info',
+				'info.png': 'info',
+				'text.png': 'info',
+				'beach.png': 'beach',
+				'tent.png': 'camping',
+				'cycling.png': 'bike-repair',
+				'coffee.png': 'cafe',
+				'drinkingwater': 'water'
+			};
+
+
 		function ev2EachFeature(data, layer) {
 			desc = '';
-			if (data.properties.description)
-				var desc = '<br/>' + data.properties.description;
+
+			if (data.geometry.type === "Point") {
+			} else {
+				if (data.properties.description)
+					var desc = '<br/>' + data.properties.description;
+			}
 
 			layer.bindPopup(data.properties.name + desc);
 		};
 
+		function evPointToLayer(data, latlon) {
+			var icon = null;
+
+			if (data.geometry.type === "Point") {
+				if (data.properties.iconUrl) {
+					var kmlIcon = data.properties.iconUrl.split(/[\\/]/).pop();
+
+					if (poiIcons[kmlIcon]) {
+						icon = L.icon({
+							iconUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-24.png',
+							iconRetinaUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-48.png',
+							iconSize: [24, 24],
+						});
+					}
+				}
+			}
+
+			if (icon) {
+				var layer = L.marker(latlon, {
+					icon: icon
+				});
+			} else {
+				var layer = L.marker(latlon, {
+				});
+			}
+
+
+			return layer;
+		};
+
 		var routes = L.geoJson(null, {
 			onEachFeature: ev2EachFeature,
+			pointToLayer: evPointToLayer,
 			style: function(feature) {
 				var color = '#aa0000';
 				var width = 3;
