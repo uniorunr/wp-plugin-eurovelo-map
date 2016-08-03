@@ -107,9 +107,13 @@ var WPEuroveloMapPlugin = {
 				"Panoramio Photos": panoramio
 			};
 
-			L.extend(overlays, routes_overlays);
 
-			var layersCtl = L.control.layers(baseLayers, overlays).addTo(map);
+			var layersCtl = L.control.layers(baseLayers, routes_overlays).addTo(map);
+			for (var l in overlays)
+				layersCtl.addOverlay(overlays[l], l);
+
+			WPEuroveloMapPlugin.pointsLayers(opts.routes_base_url + '/' + 'points.kml', opts.plugin_url, opts.routes_base_url, opts.poiIcons, map, layersCtl);
+
 			var globusEnabled = true;
 			var panoramioEnabled = true;
 
@@ -179,8 +183,7 @@ var WPEuroveloMapPlugin = {
 		}
 	},
 
-	routesLayer: function(file, pluginUrl, baseRoutesUrl, customPois) {
-
+	pointsLayers: function(file, pluginUrl, baseRoutesUrl, customPois, map, ctl) {
 		if (customPois)
 			var poiIcons = customPois;
 		else
@@ -199,7 +202,100 @@ var WPEuroveloMapPlugin = {
 				'coffee.png': 'cafe',
 				'drinkingwater': 'water'
 			};
+		var poiGroupNames = {
+			'hotel': 'Отель',
+			'hostel': 'Хостел',
+			'farmstead': 'Агроусадьба',
+			'camping': 'Кемпинг',
+			'camping-paid':'Кемпинг (платный)',
+			'water': 'Питьевая вода',
+			'table': 'Стол',
+			'table-shelter': 'Стол с навесом',
+			'bike-repair': 'Велоремонт',
+			'campsite': 'Место для палатки',
+			'relax': 'Место отдыха',
+			'bike-rental': 'Аренда велосипедов',
+			'fireplace': 'Место для огня',
+			'beach': 'Пляж',
+			'cafe': 'Кафе, ресторан',
+			'toilet': 'Туалет',
+			'shop': 'Магазин',
+			'info': 'Инфопункт',
+			'railway-station': 'Станция ж/д',
+			'viewpoint': 'Обзорная точка',
+			'poi': 'Достопримечательность',
+		};
 
+		var pointGroups = {};
+
+		function pointsEachFeature(data, layer) {
+			desc = '';
+
+			layer.bindPopup(data.properties.name + data.properties.description);
+		};
+
+		function pointsPointToLayer(data, latlon) {
+			var icon = null;
+
+			if (data.geometry.type === "Point") {
+				if (data.properties.iconUrl) {
+					var kmlIcon = data.properties.iconUrl.split(/[\\/]/).pop();
+
+					if (poiIcons[kmlIcon]) {
+						icon = L.icon({
+							iconUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-24.png',
+							iconRetinaUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-48.png',
+							iconSize: [24, 24],
+						});
+					}
+				}
+			} else {
+				return null;
+			}
+
+			if (icon) {
+				var layer = L.marker(latlon, {
+					icon: icon
+				});
+			} else {
+				var layer = L.marker(latlon, {
+				});
+			}
+
+			var desc = '';
+
+			if (data.properties.description)
+				desc = '<br/>' + data.properties.description;
+
+			layer.bindPopup('<b>' + data.properties.name + '</b>' + desc);
+
+			if (kmlIcon && poiIcons[kmlIcon] && (pointGroups[poiIcons[kmlIcon]] === undefined)) {
+				pointGroups[poiIcons[kmlIcon]] = L.featureGroup(null);
+			}
+
+			if (kmlIcon && poiIcons[kmlIcon])
+				pointGroups[poiIcons[kmlIcon]].addLayer(layer);
+
+			return null;
+		};
+
+		var fakePoints = L.geoJson(null, {
+			onEachFeature: pointsEachFeature,
+			pointToLayer: pointsPointToLayer,
+		});
+
+		fakePoints.on('ready', function() {
+			for (group in pointGroups) {
+				pointGroups[group].addTo(map);
+				ctl.addOverlay(pointGroups[group], poiGroupNames[group]);
+			}
+			fakePoints.off('ready');
+		});
+
+		var kml = omnivore.kml(file, null, fakePoints);
+	},
+
+	routesLayer: function(file, pluginUrl, baseRoutesUrl, customPois) {
 
 		function ev2EachFeature(data, layer) {
 			desc = '';
@@ -217,28 +313,8 @@ var WPEuroveloMapPlugin = {
 			var icon = null;
 
 			if (data.geometry.type === "Point") {
-				if (data.properties.iconUrl) {
-					var kmlIcon = data.properties.iconUrl.split(/[\\/]/).pop();
-
-					if (poiIcons[kmlIcon]) {
-						icon = L.icon({
-							iconUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-24.png',
-							iconRetinaUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-48.png',
-							iconSize: [24, 24],
-						});
-					}
-				}
+				return null;
 			}
-
-			if (icon) {
-				var layer = L.marker(latlon, {
-					icon: icon
-				});
-			} else {
-				var layer = L.marker(latlon, {
-				});
-			}
-
 
 			return layer;
 		};
