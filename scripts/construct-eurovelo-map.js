@@ -230,6 +230,7 @@ var WPEuroveloMapPlugin = {
 		var pointGroups = {};
 		var clusteredPoints = L.markerClusterGroup({
 				showCoverageOnHover: false,
+				zoomToBoundsOnClick: false,
 				maxClusterRadius: 24,
 				iconCreateFunction: function(cluster) {
 					var childs = cluster.getAllChildMarkers();
@@ -256,6 +257,10 @@ var WPEuroveloMapPlugin = {
 
 					return new L.DivIcon({ html: iconHtml, iconSize: new L.Point(sizeX, sizeY), className: 'poi-group' });
 				}
+		});
+
+		clusteredPoints.on('clusterclick', function (e) {
+			e.layer.spiderfy();
 		});
 
 		function pointsEachFeature(data, layer) {
