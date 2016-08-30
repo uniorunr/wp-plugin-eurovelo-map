@@ -133,7 +133,7 @@ var WPEuroveloMapPlugin = {
 
 
 			map.on('zoomend', function() {
-				if (map.getZoom() >= 11) {
+				if (map.getZoom() >= 14) {
 					if (!map.hasLayer(panoramio) && panoramioEnabled)
 						panoramio.addTo(map);
 
@@ -224,9 +224,39 @@ var WPEuroveloMapPlugin = {
 			'railway-station': 'Станция ж/д',
 			'viewpoint': 'Обзорная точка',
 			'poi': 'Достопримечательность',
+			'bus-stop': 'Автобусная остановка'
 		};
 
 		var pointGroups = {};
+		var clusteredPoints = L.markerClusterGroup({
+				showCoverageOnHover: false,
+				maxClusterRadius: 24,
+				iconCreateFunction: function(cluster) {
+					var childs = cluster.getAllChildMarkers();
+					var iconHtml = '<div>';
+					var sizeX = 0;
+					var sizeY = 0;
+					var icons = [];
+
+					for (marker in childs) {
+						var icon = childs[marker].options.icon;
+
+						if (icons.indexOf(icon.options.iconUrl) != -1)
+							continue;
+
+						icons.push(icon.options.iconUrl);
+
+						iconHtml += '<img src="' + icon.options.iconUrl + '"/>';
+						sizeX += icon.options.iconSize[0];
+						if (sizeY < icon.options.iconSize[1])
+							sizeY = icon.options.iconSize[1];
+					}
+
+					iconHtml += '</div>';
+
+					return new L.DivIcon({ html: iconHtml, iconSize: new L.Point(sizeX, sizeY), className: 'poi-group' });
+				}
+		});
 
 		function pointsEachFeature(data, layer) {
 			desc = '';
@@ -270,7 +300,7 @@ var WPEuroveloMapPlugin = {
 			layer.bindPopup('<b>' + data.properties.name + '</b>' + desc);
 
 			if (kmlIcon && poiIcons[kmlIcon] && (pointGroups[poiIcons[kmlIcon]] === undefined)) {
-				pointGroups[poiIcons[kmlIcon]] = L.featureGroup(null);
+				pointGroups[poiIcons[kmlIcon]] = L.featureGroup.subGroup(clusteredPoints, null);
 			}
 
 			if (kmlIcon && poiIcons[kmlIcon])
@@ -285,6 +315,7 @@ var WPEuroveloMapPlugin = {
 		});
 
 		fakePoints.on('ready', function() {
+			clusteredPoints.addTo(map);
 			for (group in pointGroups) {
 				pointGroups[group].addTo(map);
 				ctl.addOverlay(pointGroups[group], poiGroupNames[group]);
