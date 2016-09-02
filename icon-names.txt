@@ -20,3 +20,4 @@ railway-station
 viewpoint
 poi
 bus-stop
+nature

@@ -224,7 +224,8 @@ var WPEuroveloMapPlugin = {
 			'railway-station': 'Станция ж/д',
 			'viewpoint': 'Обзорная точка',
 			'poi': 'Достопримечательность',
-			'bus-stop': 'Автобусная остановка'
+			'bus-stop': 'Автобусная остановка',
+			'nature': 'Природный объект'
 		};
 
 		var pointGroups = {};
