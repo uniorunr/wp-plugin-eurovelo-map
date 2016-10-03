@@ -17,7 +17,7 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
                 'eurovelo_default_zoom' => '7',
                 'eurovelo_default_height' => '250',
 		'eurovelo_default_width' => '100%',
-		'eurovelo_routes_baseurl' => '/wp-contents/uploads'
+		'eurovelo_routes_baseurl' => '/wp-content/uploads'
                 ),
             'textarea' => array(
                 ),
