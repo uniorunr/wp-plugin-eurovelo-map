@@ -107,10 +107,17 @@ var WPEuroveloMapPlugin = {
 				"Panoramio Photos": panoramio
 			};
 
+			var groupedOverlays = {
+				"Фото": {
+					"Globus.tut.by": globusGroup,
+//					"Panoramio Photos": panoramio
+				},
+				"Маршруты": routes_overlays,
+				"Точки интереса": {}
+			};
 
-			var layersCtl = L.control.layers(baseLayers, routes_overlays).addTo(map);
-			for (var l in overlays)
-				layersCtl.addOverlay(overlays[l], l);
+
+			var layersCtl = L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
 
 			WPEuroveloMapPlugin.pointsLayers(opts.routes_base_url + '/' + 'points.kml', opts.plugin_url, opts.routes_base_url, opts.poiIcons, map, layersCtl);
 
@@ -324,7 +331,7 @@ var WPEuroveloMapPlugin = {
 			clusteredPoints.addTo(map);
 			for (group in pointGroups) {
 				pointGroups[group].addTo(map);
-				ctl.addOverlay(pointGroups[group], poiGroupNames[group]);
+				ctl.addOverlay(pointGroups[group],  poiGroupNames[group], "Точки интереса");
 			}
 			fakePoints.off('ready');
 		});
