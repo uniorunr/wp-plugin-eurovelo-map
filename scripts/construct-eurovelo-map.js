@@ -88,13 +88,6 @@ var WPEuroveloMapPlugin = {
 
 			WPEuroveloMapPlugin.loadGlobus(globusGroup);
 
-			var panoramio = new L.Panoramio({
-				maxLoad: 250,
-				maxTotal: 750,
-				maxClusterRadius: 50,
-				showCoverageOnHover: false,
-			});
-
 			var baseLayers = {
 				"LatLon": latlon,
 				"OSM Mapnik": osm,
@@ -102,15 +95,9 @@ var WPEuroveloMapPlugin = {
 				"РККА, 1:50000": rkka50k
 			};
 
-			var overlays = {
-				"Globus.tut.by": globusGroup,
-				"Panoramio Photos": panoramio
-			};
-
 			var groupedOverlays = {
 				"Фото": {
 					"Globus.tut.by": globusGroup,
-//					"Panoramio Photos": panoramio
 				},
 				"Маршруты": routes_overlays,
 				"Точки интереса": {}
@@ -122,34 +109,23 @@ var WPEuroveloMapPlugin = {
 			WPEuroveloMapPlugin.pointsLayers(opts.routes_base_url + '/' + 'points.kml', opts.plugin_url, opts.routes_base_url, opts.poiIcons, map, layersCtl);
 
 			var globusEnabled = true;
-			var panoramioEnabled = true;
 
 			map.on('overlayadd', function(obj) {
 				if (obj.layer === globusGroup)
 					globusEnabled = true;
-				if (obj.layer === panoramio)
-					panoramioEnabled = true;
 			});
 
 			map.on('overlayremove', function(obj) {
 				if (obj.layer === globusGroup)
 					globusEnabled = false;
-				if (obj.layer === panoramio)
-					panoramioEnabled = false;
 			});
 
 
 			map.on('zoomend', function() {
 				if (map.getZoom() >= 14) {
-					if (!map.hasLayer(panoramio) && panoramioEnabled)
-						panoramio.addTo(map);
-
 					if (!map.hasLayer(globusGroup) && globusEnabled)
 						globusGroup.addTo(map);
 				} else {
-					if (map.hasLayer(panoramio))
-						map.removeLayer(panoramio);
-
 					if (map.hasLayer(globusGroup))
 						map.removeLayer(globusGroup);
 				}

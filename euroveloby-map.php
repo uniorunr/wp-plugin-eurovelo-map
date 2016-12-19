@@ -113,7 +113,6 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
 	    wp_register_script('leaflet_featuregroup_subgroup_js', plugins_url('lib/Leaflet.markercluster/leaflet.featuregroup.subgroup.js', __FILE__),
 		    ['leaflet_js', 'leaflet_markercluster_js'], null, true);
 
-	    wp_register_script('leaflet_panoramio_js', plugins_url('lib/Leaflet.Panoramio/Panoramio.js', __FILE__), ['leaflet_js', 'leaflet_markercluster_js'], null, true);
 //	    wp_register_script('mapbox_omnivore',
 //		    '//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.js',
 //		    ['leaflet_js'], null, true);
@@ -127,7 +126,7 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
 
             /* run an init function because other wordpress plugins don't play well with their window.onload functions */
 	    wp_register_script('eurovelo_map_init', plugins_url('scripts/init-eurovelo-map.js', __FILE__),
-		    Array('leaflet_js', 'leaflet_markercluster_js', 'leaflet_panoramio_js',
+		    Array('leaflet_js', 'leaflet_markercluster_js', 
 		    'mapbox_omnivore', 'globus_data'), '0.1', true);
 
             /* run a construct function in the document head for the init function to use */
@@ -196,7 +195,6 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
             wp_enqueue_script('leaflet_fullscreen_js');
             wp_enqueue_script('leaflet_markercluster_js');
             wp_enqueue_script('leaflet_featuregroup_subgroup_js');
-	    wp_enqueue_script('leaflet_panoramio_js');
 	    wp_enqueue_script('leaflet_layer_tree_js');
 	    wp_enqueue_script('leaflet_grouped_layer_control_js');
             wp_enqueue_script('mapbox_omnivore');
