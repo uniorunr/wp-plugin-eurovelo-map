@@ -21,3 +21,4 @@ viewpoint
 poi
 bus-stop
 nature
+audio
