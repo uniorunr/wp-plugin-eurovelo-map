@@ -104,9 +104,10 @@ var WPEuroveloMapPlugin = {
 			};
 
 
+
 			var layersCtl = L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
 
-			WPEuroveloMapPlugin.pointsLayers(opts.routes_base_url + '/' + 'points.kml', opts.plugin_url, opts.routes_base_url, opts.poiIcons, map, layersCtl);
+			var overlays = WPEuroveloMapPlugin.pointsLayers(opts.routes_base_url + '/' + 'points.kml', opts.plugin_url, opts.routes_base_url, opts.poiIcons, map, layersCtl);
 
 			var globusEnabled = true;
 
@@ -128,6 +129,13 @@ var WPEuroveloMapPlugin = {
 				} else {
 					if (map.hasLayer(globusGroup))
 						map.removeLayer(globusGroup);
+				}
+				for (overlay in overlays) {
+					var o = overlays[overlay];
+					if (map.getZoom() >= o.minZoom)
+						o.layer.addTo(map);
+					else
+						map.removeLayer(o.layer);
 				}
 			});
 
@@ -210,6 +218,34 @@ var WPEuroveloMapPlugin = {
 			'bus-stop': 'Автобусная остановка',
 			'nature': 'Природный объект'
 		};
+
+		var minZooms = {
+			'hotel': 10,
+			'hostel': 10,
+			'farmstead': 10,
+			'camping': 11,
+			'camping-paid': 11,
+			'water': 11,
+			'table': 11,
+			'table-shelter': 11,
+			'bike-repair': 11,
+			'campsite': 11,
+			'relax': 11,
+			'bike-rental': 11,
+			'fireplace': 11,
+			'beach': 11,
+			'cafe': 11,
+			'toilet': 11,
+			'shop': 11,
+			'info': 11,
+			'railway-station': 10,
+			'viewpoint': 11,
+			'poi': 10,
+			'bus-stop': 10,
+			'nature': 10
+		};
+
+		var overlays = {};
 
 		var pointGroups = {};
 		var clusteredPoints = L.markerClusterGroup({
@@ -306,13 +342,22 @@ var WPEuroveloMapPlugin = {
 		fakePoints.on('ready', function() {
 			clusteredPoints.addTo(map);
 			for (group in pointGroups) {
-				pointGroups[group].addTo(map);
+				overlays[group] = {
+					layer: pointGroups[group],
+					minZoom: minZooms[group]
+				};
+
+				if (map.getZoom() >= minZooms[group])
+					pointGroups[group].addTo(map);
+
 				ctl.addOverlay(pointGroups[group],  poiGroupNames[group], "Точки интереса");
 			}
 			fakePoints.off('ready');
 		});
 
-		var kml = omnivore.kml(file, null, fakePoints);
+		omnivore.kml(file, null, fakePoints);
+
+		return overlays;
 	},
 
 	routesLayer: function(file, pluginUrl, baseRoutesUrl, customPois) {
