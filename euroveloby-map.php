@@ -97,6 +97,9 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
 	    wp_register_style('leaflet_grouped_layer_control_css', plugins_url('lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.min.css', __FILE__),
 		    ['leaflet_stylesheet']);
 
+        wp_register_style('leaflet_locate_control_css', plugins_url('lib/leaflet-locatecontrol/L.Control.Locate.min.css', __FILE__),
+                    ['leaflet_stylesheet']);
+
 	    wp_register_style('font-awesome_css', plugins_url('lib/font-awesome-4.5.0/css/font-awesome.min.css', __FILE__), array());
 
             wp_register_script('leaflet_js', plugins_url('lib/Leaflet/leaflet-src.js', __FILE__), Array(), $version, true);
@@ -115,6 +118,8 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
 
         wp_register_script('leaflet_hash_js', plugins_url('lib/leaflet-hash/leaflet-hash.js', __FILE__),
                     ['leaflet_js'], null, true);
+        wp_register_script('leaflet_locate_control_js', plugins_url('lib/leaflet-locatecontrol/L.Control.Locate.min.js', __FILE__),
+                            ['leaflet_js'], null, true);
 
 //	    wp_register_script('mapbox_omnivore',
 //		    '//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.js',
@@ -192,11 +197,13 @@ if (!class_exists('Eurovelo_Map_Plugin')) {
 	    wp_enqueue_style('leaflet_markercluster_css');
 	    wp_enqueue_style('leaflet_markercluster_def_css');
 	    wp_enqueue_style('leaflet_layer_tree_css');
+	    wp_enqueue_style('leaflet_locate_control_css');
 	    wp_enqueue_style('leaflet_grouped_layer_control_css');
 	    wp_enqueue_style('font-awesome_css');
             wp_enqueue_script('leaflet_js');
             wp_enqueue_script('leaflet_fullscreen_js');
             wp_enqueue_script('leaflet_hash_js');
+            wp_enqueue_script('leaflet_locate_control_js');
             wp_enqueue_script('leaflet_markercluster_js');
             wp_enqueue_script('leaflet_featuregroup_subgroup_js');
 	    wp_enqueue_script('leaflet_layer_tree_js');

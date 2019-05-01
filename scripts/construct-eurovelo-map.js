@@ -31,6 +31,13 @@ var WPEuroveloMapPlugin = {
 
 			var hash = new L.Hash(map);
 
+			L.control.locate({
+				flyTo: true,
+				locateOptions: {
+					maxZoom: 15
+				}
+			}).addTo(map);
+
 			var latlon = L.tileLayer('http://tile.latlon.org/tiles/{z}/{x}/{y}.png', {
 					opacity: 1,
 					maxZoom: 18,
