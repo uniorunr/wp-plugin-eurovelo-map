@@ -19,7 +19,7 @@ var WPEuroveloMapPlugin = {
 		this.add(function() {
 			var map;
 
-			map = L.map(div, 
+			map = L.map(div,
 					{
 						zoomControl: opts.zoomcontrol,
 						scrollWheelZoom: opts.scrollwheel,
@@ -28,6 +28,8 @@ var WPEuroveloMapPlugin = {
 						}
 
 					}).setView([opts.lat, opts.lng], opts.zoom);
+
+			var hash = new L.Hash(map);
 
 			var latlon = L.tileLayer('http://tile.latlon.org/tiles/{z}/{x}/{y}.png', {
 					opacity: 1,
