@@ -25,7 +25,8 @@ var WPEuroveloMapPlugin = {
 						scrollWheelZoom: opts.scrollwheel,
 						fullscreenControl: {
 							pseudoFullscreen: false
-						}
+						},
+						gestureHandling: true
 
 					}).setView([opts.lat, opts.lng], opts.zoom);
 
