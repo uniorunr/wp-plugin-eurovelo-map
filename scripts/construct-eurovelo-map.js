@@ -131,7 +131,7 @@ var WPEuroveloMapPlugin = {
 					globusEnabled = false;
 			});
 
-
+			var initLayers = [];
 			map.on('zoomend', function() {
 				if (map.getZoom() >= 14) {
 					if (!map.hasLayer(globusGroup) && globusEnabled)
@@ -140,12 +140,20 @@ var WPEuroveloMapPlugin = {
 					if (map.hasLayer(globusGroup))
 						map.removeLayer(globusGroup);
 				}
-				for (overlay in overlays) {
+				var markerContainer = document.querySelector('.leaflet-marker-pane');
+				for (var overlay in overlays) {
 					var o = overlays[overlay];
-					if (map.getZoom() >= o.minZoom)
+					if (!initLayers.includes(overlay) && map.getZoom() <= o.minZoom) {
 						o.layer.addTo(map);
-					else
-						map.removeLayer(o.layer);
+						initLayers.push(overlay)
+					}
+					markerContainer.classList.add('transparent');
+					if (map.getZoom() >= o.minZoom) {
+						markerContainer.classList.remove('transparent');
+						if (map.hasLayer(o.layer)) {
+							o.layer.addTo(map);
+						}
+					}
 				}
 			});
 
@@ -308,8 +316,8 @@ var WPEuroveloMapPlugin = {
 
 					if (poiIcons[kmlIcon]) {
 						icon = L.icon({
-							iconUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-24.png',
-							iconRetinaUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-dark-48.png',
+							iconUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-transparent-24.png',
+							iconRetinaUrl: pluginUrl + '/images/icons/' + poiIcons[kmlIcon] + '-transparent-48.png',
 							iconSize: [24, 24],
 						});
 					}
