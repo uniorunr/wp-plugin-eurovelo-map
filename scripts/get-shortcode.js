@@ -8,14 +8,14 @@
 	    }
 
 		var map_input = document.getElementById('map-shortcode'),
-			map_1 = WPEuroveloMapPlugin.maps[0],
+			map_1 = WPEuroveloMapPlugin.maps[0];
 
 		function update_map () {
 			var latlng = map_1.getCenter();
 			map_input.value = '[leaflet-map lat=' +
 				latlng.lat +
-				' lng=' + 
-				latlng.lng + 
+				' lng=' +
+				latlng.lng +
 				' zoom=' +
 				map_1.getZoom() +
 				']';
