@@ -131,7 +131,6 @@ var WPEuroveloMapPlugin = {
 					globusEnabled = false;
 			});
 
-			var initLayers = [];
 			map.on('zoomend', function() {
 				if (map.getZoom() >= 14) {
 					if (!map.hasLayer(globusGroup) && globusEnabled)
@@ -140,21 +139,16 @@ var WPEuroveloMapPlugin = {
 					if (map.hasLayer(globusGroup))
 						map.removeLayer(globusGroup);
 				}
-				var markerContainer = document.querySelector('.leaflet-marker-pane');
-				for (var overlay in overlays) {
-					var o = overlays[overlay];
-					if (!initLayers.includes(overlay) && map.getZoom() <= o.minZoom) {
-						o.layer.addTo(map);
-						initLayers.push(overlay)
-					}
-					markerContainer.classList.add('transparent');
-					if (map.getZoom() >= o.minZoom) {
-						markerContainer.classList.remove('transparent');
-						if (map.hasLayer(o.layer)) {
-							o.layer.addTo(map);
-						}
-					}
-				}
+              for (overlay in overlays) {
+                var o = overlays[overlay];
+                if (map.getZoom() === o.minZoom) {
+                  o.layer.addTo(map);
+                } else if (map.getZoom() > o.minZoom && map.hasLayer(o.layer)) {
+                  o.layer.addTo(map);
+                } else {
+                  map.removeLayer(o.layer);
+                }
+              }
 			});
 
 
