@@ -137,12 +137,14 @@ var WPEuroveloMapPlugin = {
 			});
 
 			map.on('zoomend', function() {
-				if (map.getZoom() >= 14) {
-					if (!map.hasLayer(globusGroup) && globusEnabled)
+				if (map.getZoom() === 14) {
+					if (!map.hasLayer(globusGroup) && globusEnabled) {
 						globusGroup.addTo(map);
+					}
+				} else if (map.hasLayer(globusGroup) && map.getZoom() > 14) {
+					globusGroup.addTo(map);
 				} else {
-					if (map.hasLayer(globusGroup))
-						map.removeLayer(globusGroup);
+					map.removeLayer(globusGroup);
 				}
               for (overlay in overlays) {
                 var o = overlays[overlay];
