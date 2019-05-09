@@ -131,6 +131,11 @@ var WPEuroveloMapPlugin = {
 					globusEnabled = false;
 			});
 
+			var initZoom = null;
+			map.on('zoomstart', function() {
+				initZoom = map.getZoom();
+			});
+
 			map.on('zoomend', function() {
 				if (map.getZoom() >= 14) {
 					if (!map.hasLayer(globusGroup) && globusEnabled)
@@ -141,7 +146,7 @@ var WPEuroveloMapPlugin = {
 				}
               for (overlay in overlays) {
                 var o = overlays[overlay];
-                if (map.getZoom() === o.minZoom) {
+                if (map.getZoom() === o.minZoom || initZoom < o.minZoom && map.getZoom() > o.minZoom) {
                   o.layer.addTo(map);
                 } else if (map.getZoom() > o.minZoom && map.hasLayer(o.layer)) {
                   o.layer.addTo(map);
